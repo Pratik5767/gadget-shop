@@ -1,0 +1,5 @@
+CREATE PROCEDURE sp_GetInventory_Date
+AS
+BEGIN
+	SELECT * FROM Inventory
+END
