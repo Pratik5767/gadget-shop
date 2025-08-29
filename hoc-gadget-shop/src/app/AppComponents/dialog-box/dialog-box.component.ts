@@ -13,6 +13,6 @@ export class DialogBoxComponent {
     modal = inject(NgbActiveModal)
 
     confirm() {
-        this.modal.close();
+        this.modal.close({ event: "confirm" });
     }
 }

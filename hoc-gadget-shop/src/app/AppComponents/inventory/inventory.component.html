@@ -56,22 +56,22 @@
     <table class="table table-bordered align-middle">
         <thead class="table-light">
             <tr>
-                <th>#</th>
                 <th>Product Id</th>
+                <th>Product Name</th>
                 <th>Stock Available</th>
                 <th>Reorder Point</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let inventory of inventoryDetials" >
+            <tr *ngFor="let inventory of inventoryDetials">
                 <td>{{inventory.ProductId}}</td>
                 <td>{{inventory.ProductName}}</td>
                 <td>{{inventory.AvailableQnt}}</td>
                 <td>{{inventory.ReOrderPoint}}</td>
                 <td>
                     <button class="btn btn-primary btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm mx-2" (click)="openConfirmDialog()">Delete</button>
+                    <button class="btn btn-danger btn-sm mx-2" (click)="openConfirmDialog(inventory.ProductId)">Delete</button>
                 </td>
             </tr>
         </tbody>

@@ -14,7 +14,9 @@ import { DialogBoxComponent } from '../dialog-box/dialog-box.component';
 })
 export class InventoryComponent {
     httpClient = inject(HttpClient);
+    inventoryDetials: any;
     private modelService = inject(NgbModal);
+    productIdToDelete: number = 0;
 
     inventoryData = {
         productId: "",
@@ -22,8 +24,6 @@ export class InventoryComponent {
         availableQnt: 0,
         reorderPoint: 0,
     }
-
-    inventoryDetials: any;
 
     ngOnInit() {
         this.getInventoryDetails();
@@ -58,7 +58,20 @@ export class InventoryComponent {
         });
     }
 
-    openConfirmDialog() {
-        this.modelService.open(DialogBoxComponent);
+    openConfirmDialog(productId: number) {
+        this.productIdToDelete = productId;
+        console.log(this.productIdToDelete);
+        this.modelService.open(DialogBoxComponent).result.then((data) => {
+            if (data.event == "confirm") {
+                this.deleteInventory();
+            }
+        });
+    }
+
+    deleteInventory(): void {
+        let apiUrl = `https://localhost:7136/api/Inventory?productId=${this.productIdToDelete}`;
+        this.httpClient.delete(apiUrl).subscribe(data => {
+            this.getInventoryDetails();
+        })
     }
 }
