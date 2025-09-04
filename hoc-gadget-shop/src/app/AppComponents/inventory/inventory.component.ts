@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogBoxComponent } from '../dialog-box/dialog-box.component';
+import { environment } from '../../../environment';
 
 @Component({
     selector: 'app-inventory',
@@ -30,17 +31,13 @@ export class InventoryComponent {
     }
 
     getInventoryDetails() {
-        let apiUrl = "https://localhost:7136/api/Inventory";
-
-        this.httpClient.get(apiUrl).subscribe(data => {
+        this.httpClient.get(environment.apiUrl).subscribe(data => {
             this.inventoryDetials = data;
             console.log(this.inventoryDetials)
         });
     }
 
     onSubmit(): void {
-        let apiUrl = "https://localhost:7136/api/Inventory";
-
         let httpOptions = {
             headers: new HttpHeaders({
                 Authorization: 'my-auth-token',
@@ -48,7 +45,7 @@ export class InventoryComponent {
             })
         }
 
-        this.httpClient.post(apiUrl, this.inventoryData, httpOptions).subscribe({
+        this.httpClient.post(environment.apiUrl, this.inventoryData, httpOptions).subscribe({
             next: v => console.log(v),
             error: e => console.log(e),
             complete: () => {
@@ -69,7 +66,7 @@ export class InventoryComponent {
     }
 
     deleteInventory(): void {
-        let apiUrl = `https://localhost:7136/api/Inventory?productId=${this.productIdToDelete}`;
+        let apiUrl = `${environment.apiUrl}?productId=${this.productIdToDelete}`;
         this.httpClient.delete(apiUrl).subscribe(data => {
             this.getInventoryDetails();
         })

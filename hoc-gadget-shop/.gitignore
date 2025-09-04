@@ -22,6 +22,7 @@
 src/environments/*.local.ts
 *.env
 *.env.local
+src/environment.ts
 
 # OS-specific
 .DS_Store

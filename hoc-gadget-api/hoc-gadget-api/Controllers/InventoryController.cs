@@ -1,10 +1,8 @@
 ﻿using hoc_gadget_api.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text.Json.Serialization;
 
 namespace hoc_gadget_api.Controllers
 {
@@ -12,13 +10,16 @@ namespace hoc_gadget_api.Controllers
     [ApiController]
     public class InventoryController : ControllerBase
     {
+        private readonly string _connectionString;
+        public InventoryController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
+
         [HttpPost]
         public ActionResult SaveInventoryData(InventoryRequestDto requestDto)
         {
-            SqlConnection connection = new SqlConnection
-            {
-                ConnectionString = "Server=LAPTOP-OP51S33J\\SQLEXPRESS;Database=gadgetShop;Integrated Security=True;TrustServerCertificate=True;"
-            };
+            SqlConnection connection = new SqlConnection(_connectionString);
 
             SqlCommand command = new SqlCommand
             {
@@ -33,21 +34,15 @@ namespace hoc_gadget_api.Controllers
             command.Parameters.AddWithValue("@ReOrderPoint", requestDto.ReOrderPoint);
 
             connection.Open();
-
             command.ExecuteNonQuery();
-
             connection.Close();
-
             return Ok();
         }
 
         [HttpGet]
         public ActionResult GetInventoryData()
         {
-            SqlConnection connection = new SqlConnection
-            {
-                ConnectionString = "Server=LAPTOP-OP51S33J\\SQLEXPRESS;Database=gadgetShop;Integrated Security=True;TrustServerCertificate=True;"
-            };
+            SqlConnection connection = new SqlConnection(_connectionString);
 
             SqlCommand command = new SqlCommand
             {
@@ -57,7 +52,6 @@ namespace hoc_gadget_api.Controllers
             };
 
             connection.Open();
-
             List<InventoryDto> response = new List<InventoryDto>();
 
             using (SqlDataReader sqlDataReader = command.ExecuteReader())
@@ -69,23 +63,18 @@ namespace hoc_gadget_api.Controllers
                     inventoryDto.ProductName = Convert.ToString(sqlDataReader["ProductName"]);
                     inventoryDto.AvailableQnt = Convert.ToInt32(sqlDataReader["AvailableQnt"]);
                     inventoryDto.ReOrderPoint = Convert.ToInt32(sqlDataReader["ReOrderPoint"]);
-
                     response.Add(inventoryDto);
                 }
             };
 
             connection.Close();
-
             return Ok(JsonConvert.SerializeObject(response));
         }
 
         [HttpDelete]
         public ActionResult DeleteInventoryData(int productId)
         {
-            SqlConnection connection = new SqlConnection
-            {
-                ConnectionString = "Server=LAPTOP-OP51S33J\\SQLEXPRESS;Database=gadgetShop;Integrated Security=True;TrustServerCertificate=True;"
-            };
+            SqlConnection connection = new SqlConnection(_connectionString);
 
             SqlCommand command = new SqlCommand
             {
@@ -95,12 +84,9 @@ namespace hoc_gadget_api.Controllers
             };
 
             connection.Open();
-
             command.Parameters.AddWithValue("@ProductId", productId);
             command.ExecuteNonQuery();
-
             connection.Close();
-
             return Ok();
         }
     }
